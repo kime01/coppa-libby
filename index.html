@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coppa Libby - Medagliere Virtuale</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* SFONDO CON IMMAGINE FUNZIONANTE */
+        .muttley-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* URL pubblico e funzionante */
+            background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            z-index: -2;
+            opacity: 0.7;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.85) 0%, rgba(42, 37, 75, 0.85) 100%);
+            z-index: -1;
+        }
+        
+        header {
+            background-color: rgba(30, 30, 46, 0.95);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 5px solid #d4a017;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+        
+        .title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: #ffcc00;
+            text-shadow: 3px 3px 0 #b8860b, 6px 6px 0 rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        .trophy-icon {
+            font-size: 3.8rem;
+            color: #ffcc00;
+            animation: spin 4s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            margin-top: 12px;
+            color: #cccccc;
+            font-style: italic;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .assign-medal-section, .medals-leaderboard {
+            background-color: rgba(40, 40, 62, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            border: 2px solid #d4a017;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #ffcc00;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .medal-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+        
+        select, input, textarea {
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 2px solid #555;
+            background-color: rgba(30, 30, 46, 0.95);
+            color: white;
+            font-size: 1.05rem;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #d4a017;
+            box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.2);
+        }
+        
+        .medal-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .medal-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 10px;
+            background-color: rgba(30, 30, 46, 0.8);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .medal-option:hover {
+            background-color: rgba(212, 160, 23, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .medal-option.selected {
+            background-color: rgba(212, 160, 23, 0.25);
+            border: 2px solid #d4a017;
+        }
+        
+        .medal-icon {
+            font-size: 1.8rem;
+        }
+        
+        .gold { color: #ffcc00; }
+        .silver { color: #c0c0c0; }
+        .bronze { color: #cd7f32; }
+        
+        .submit-btn {
+            grid-column: 1 / -1;
+            background: linear-gradient(to right, #d4a017, #ffcc00);
+            color: #1a1a2e;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(to right, #ffcc00, #ffd700);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212, 160, 23, 0.4);
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: rgba(30, 30, 46, 0.95);
+            border-radius: 10px;
+            padding: 12px 18px;
+            border: 2px solid #555;
+        }
+        
+        .search-box input {
+            border: none;
+            background: transparent;
+            width: 220px;
+            padding: 0 0 0 10px;
+            font-size: 1.05rem;
+        }
+        
+        .medals-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        
+        .medal-item {
+            background-color: rgba(30, 30, 46, 0.95);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            transition: all 0.3s;
+            border-left: 6px solid #d4a017;
+        }
+        
+        .medal-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(40, 40, 62, 0.95);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .user-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background-color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .medal-details {
+            flex-grow: 1;
+        }
+        
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 5px;
+        }
+        
+        .medal-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .medal-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .assigner {
+            font-style: italic;
+            color: #cccccc;
+            font-size: 1.05rem;
+        }
+        
+        .medal-date {
+            color: #aaaaaa;
+            font-size: 0.95rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        
+        .message {
+            margin-top: 10px;
+            color: #cccccc;
+            font-style: italic;
+            font-size: 1.05rem;
+            line-height: 1.4;
+        }
+        
+        footer {
+            background-color: rgba(30, 30, 46, 0.95);
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+            border-top: 5px solid #d4a017;
+            color: #cccccc;
+        }
+        
+        .rules {
+            max-width: 800px;
+            margin: 0 auto 25px;
+            text-align: left;
+            background-color: rgba(40, 40, 62, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #d4a017;
+        }
+        
+        .rules h3 {
+            color: #ffcc00;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .rules ul {
+            padding-left: 22px;
+        }
+        
+        .rules li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .title-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .medal-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .leaderboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .medal-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .medal-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        
+        .muttley-banner {
+            max-width: 320px;
+            margin: 15px auto 0;
+            padding: 10px 20px;
+            background: linear-gradient(to right, rgba(212, 160, 23, 0.1), rgba(212, 160, 23, 0.2));
+            border-radius: 25px;
+            border: 2px solid #d4a017;
+            font-size: 1rem;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
+        .theme-decoration {
+            height: 4px;
+            width: 100px;
+            background: linear-gradient(to right, transparent, #d4a017, transparent);
+            margin: 15px auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- SFONDO GARANTITO FUNZIONANTE -->
+    <div class="muttley-background"></div>
+    <div class="overlay"></div>
+    
+    <header>
+        <div class="title-container">
+            <i class="fas fa-trophy trophy-icon"></i>
+            <h1>COPPA LIBBY</h1>
+            <i class="fas fa-trophy trophy-icon"></i>
+        </div>
+        <p class="subtitle">Medagliere virtuale - Assegna medaglie agli altri, non a te stesso!</p>
+        <div class="theme-decoration"></div>
+        <div class="muttley-banner">
+            <i class="fas fa-paw"></i> Medagliere dello spirito di squadra <i class="fas fa-paw"></i>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="assign-medal-section">
+            <h2 class="section-title"><i class="fas fa-award"></i> Assegna una Medaglia</h2>
+            <form class="medal-form" id="medalForm">
+                <div class="form-group">
+                    <label for="assigner">Il tuo nome:</label>
+                    <input type="text" id="assigner" placeholder="Come ti chiami?" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="recipient">A chi vuoi assegnare la medaglia?</label>
+                    <input type="text" id="recipient" placeholder="Nome del destinatario" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo di medaglia:</label>
+                    <div class="medal-types">
+                        <div class="medal-option selected" data-type="gold">
+                            <i class="fas fa-medal medal-icon gold"></i>
+                            <span>Oro</span>
+                        </div>
+                        <div class="medal-option" data-type="silver">
+                            <i class="fas fa-medal medal-icon silver"></i>
+                            <span>Argento</span>
+                        </div>
+                        <div class="medal-option" data-type="bronze">
+                            <i class="fas fa-medal medal-icon bronze"></i>
+                            <span>Bronzo</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="medalType" value="gold" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Categoria:</label>
+                    <select id="category" required>
+                        <option value="">Seleziona una categoria</option>
+                        <option value="coraggio">Coraggio</option>
+                        <option value="creativita">Creatività</option>
+                        <option value="gentilezza">Gentilezza</option>
+                        <option value="leadership">Leadership</option>
+                        <option value="divertimento">Divertimento</option>
+                        <option value="altruismo">Altruismo</option>
+                        <option value="altro">Altro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Messaggio (opzionale):</label>
+                    <textarea id="message" rows="3" placeholder="Spiega perché merita questa medaglia..."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-trophy"></i> Assegna Medaglia
+                </button>
+            </form>
+        </section>
+        
+        <section class="medals-leaderboard">
+            <div class="leaderboard-header">
+                <h2 class="section-title"><i class="fas fa-list-ol"></i> Medagliere</h2>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cerca per nome o categoria...">
+                </div>
+            </div>
+            
+            <div class="medals-list" id="medalsList">
+                <!-- Medaglie caricate qui -->
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="rules">
+            <h3><i class="fas fa-info-circle"></i> Regole della Coppa Libby</h3>
+            <ul>
+                <li>Puoi assegnare medaglie solo ad altre persone, non a te stesso</li>
+                <li>Sii generoso nel riconoscere i meriti degli altri</li>
+                <li>Le medaglie possono essere d'oro, argento o bronzo</li>
+                <li>Ogni medaglia deve avere una categoria e può includere un messaggio</li>
+                <li>Lo spirito è quello del cartone "Le macchine volanti": amicizia e fair play!</li>
+            </ul>
+        </div>
+        <p>Coppa Libby - Medagliere Virtuale</p>
+        <p><i class="fas fa-laugh-wink"></i> Assegna medaglie con divertimento e spirito di squadra!</p>
+    </footer>
+
+    <script>
+        let medals = [
+            {
+                id: 1,
+                recipient: "Marco Rossi",
+                assigner: "Giulia Verdi",
+                type: "gold",
+                category: "coraggio",
+                message: "Per aver affrontato con coraggio la presentazione davanti a tutti",
+                date: "2023-10-15",
+                avatarColor: "#3498db"
+            },
+            {
+                id: 2,
+                recipient: "Anna Bianchi",
+                assigner: "Luca Neri",
+                type: "silver",
+                category: "creativita",
+                message: "Per l'idea geniale che ha risolto il problema del progetto",
+                date: "2023-10-10",
+                avatarColor: "#e74c3c"
+            },
+            {
+                id: 3,
+                recipient: "Francesco Esposito",
+                assigner: "Sofia Romano",
+                type: "bronze",
+                category: "gentilezza",
+                message: "Per aver aiutato un collega in difficoltà senza essere pregato",
+                date: "2023-10-05",
+                avatarColor: "#2ecc71"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const medalOptions = document.querySelectorAll('.medal-option');
+            const medalTypeInput = document.getElementById('medalType');
+            
+            medalOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    medalOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    medalTypeInput.value = this.getAttribute('data-type');
+                });
+            });
+            
+            renderMedals(medals);
+            
+            const medalForm = document.getElementById('medalForm');
+            medalForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const assigner = document.getElementById('assigner').value;
+                const recipient = document.getElementById('recipient').value;
+                const type = medalTypeInput.value;
+                const category = document.getElementById('category').value;
+                const message = document.getElementById('message').value;
+                
+                if (assigner.toLowerCase().trim() === recipient.toLowerCase().trim()) {
+                    alert("Attenzione! Non puoi assegnare medaglie a te stesso. Lo spirito della Coppa Libby è riconoscere il merito degli altri!");
+                    return;
+                }
+                
+                const newMedal = {
+                    id: medals.length + 1,
+                    recipient: recipient,
+                    assigner: assigner,
+                    type: type,
+                    category: category,
+                    message: message || "Nessun messaggio fornito",
+                    date: new Date().toISOString().split('T')[0],
+                    avatarColor: getRandomColor()
+                };
+                
+                medals.unshift(newMedal);
+                renderMedals(medals);
+                medalForm.reset();
+                medalOptions.forEach(opt => opt.classList.remove('selected'));
+                document.querySelector('.medal-option[data-type="gold"]').classList.add('selected');
+                medalTypeInput.value = "gold";
+                
+                alert(`Medaglia di ${getMedalTypeName(type)} assegnata con successo a ${recipient}!`);
+            });
+            
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                if (searchTerm.trim() === '') {
+                    renderMedals(medals);
+                    return;
+                }
+                const filteredMedals = medals.filter(medal => 
+                    medal.recipient.toLowerCase().includes(searchTerm) ||
+                    medal.assigner.toLowerCase().includes(searchTerm) ||
+                    medal.category.toLowerCase().includes(searchTerm) ||
+                    medal.message.toLowerCase().includes(searchTerm)
+                );
+                renderMedals(filteredMedals);
+            });
+        });
+        
+        function renderMedals(medalsArray) {
+            const medalsList = document.getElementById('medalsList');
+            
+            if (medalsArray.length === 0) {
+                medalsList.innerHTML = '<div class="medal-item" style="justify-content: center; font-style: italic; padding: 30px;">Nessuna medaglia trovata. Assegna la prima medaglia!</div>';
+                return;
+            }
+            
+            const sortedMedals = [...medalsArray].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            medalsList.innerHTML = sortedMedals.map(medal => {
+                const medalTypeName = getMedalTypeName(medal.type);
+                const categoryName = getCategoryName(medal.category);
+                const formattedDate = formatDate(medal.date);
+                const initials = getInitials(medal.recipient);
+                
+                return `
+                    <div class="medal-item">
+                        <div class="user-avatar" style="background-color: ${medal.avatarColor}">
+                            ${initials}
+                        </div>
+                        <div class="medal-details">
+                            <div class="user-name">${medal.recipient}</div>
+                            <div class="medal-info">
+                                <div class="medal-count">
+                                    <i class="fas fa-medal medal-icon ${medal.type}"></i>
+                                    <span>${medalTypeName}</span>
+                                </div>
+                                <div class="category">Categoria: ${categoryName}</div>
+                                <div class="assigner">Assegnata da: ${medal.assigner}</div>
+                                <div class="medal-date">${formattedDate}</div>
+                            </div>
+                            <div class="message">"${medal.message}"</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function getMedalTypeName(type) {
+            const types = { 'gold': 'Oro', 'silver': 'Argento', 'bronze': 'Bronzo' };
+            return types[type] || type;
+        }
+        
+        function getCategoryName(category) {
+            const categories = {
+                'coraggio': 'Coraggio', 'creativita': 'Creatività', 'gentilezza': 'Gentilezza',
+                'leadership': 'Leadership', 'divertimento': 'Divertimento', 'altruismo': 'Altruismo', 'altro': 'Altro'
+            };
+            return categories[category] || category;
+        }
+        
+        function formatDate(dateString) {
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('it-IT', options);
+        }
+        
+        function getInitials(name) {
+            return name.split(' ').map(part => part[0]).join('').toUpperCase().substring(0, 2);
+        }
+        
+        function getRandomColor() {
+            const colors = [
+                '#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#1abc9c',
+                '#f39c12', '#d35400', '#c0392b', '#16a085', '#8e44ad'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+</body>
+</html>
