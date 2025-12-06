@@ -7,7 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: linear-gradient(135deg, #1a1a2e 0%, #2a254b 100%); color: white; min-height: 100vh; }
+        
+        /* SFONDO CON IMMAGINE DI MUTTLEY */
+        body { 
+            background: 
+                linear-gradient(rgba(26, 26, 46, 0.85), rgba(42, 37, 75, 0.85)),
+                url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: white; 
+            min-height: 100vh;
+        }
         
         header { 
             background: rgba(30, 30, 46, 0.95); 
@@ -15,6 +27,7 @@
             text-align: center; 
             border-bottom: 5px solid #d4a017;
             box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
         }
         
         h1 { 
@@ -32,6 +45,7 @@
             padding: 25px; 
             margin-bottom: 30px;
             border: 2px solid #d4a017;
+            backdrop-filter: blur(3px);
         }
         
         .form-group { margin-bottom: 20px; }
@@ -66,6 +80,7 @@
             background: rgba(30,30,46,0.9); border-radius: 10px; padding: 20px;
             margin-bottom: 15px; border-left: 5px solid #d4a017;
             transition: all 0.3s;
+            backdrop-filter: blur(2px);
         }
         .medal-item:hover {
             transform: translateX(5px);
@@ -87,6 +102,7 @@
         footer {
             background: rgba(30,30,46,0.95); text-align: center;
             padding: 20px; margin-top: 40px; border-top: 5px solid #d4a017;
+            backdrop-filter: blur(5px);
         }
         
         .search-box {
@@ -109,6 +125,19 @@
             border-radius: 15px; font-size: 0.85rem;
         }
         
+        /* Banner Muttley */
+        .muttley-banner {
+            max-width: 400px;
+            margin: 15px auto 0;
+            padding: 8px 20px;
+            background: linear-gradient(to right, rgba(212,160,23,0.1), rgba(212,160,23,0.2));
+            border-radius: 20px;
+            border: 2px solid #d4a017;
+            font-size: 1rem;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; }
             .medal-types { flex-direction: column; }
@@ -120,6 +149,9 @@
     <header>
         <h1><i class="fas fa-trophy"></i> COPPA LIBBY <i class="fas fa-trophy"></i></h1>
         <p>Medagliere virtuale - Assegna medaglie agli altri, non a te stesso!</p>
+        <div class="muttley-banner">
+            <i class="fas fa-dog"></i> Ispirato a Muttley delle "Macchine Volanti" <i class="fas fa-dog"></i>
+        </div>
     </header>
     
     <main class="container">
@@ -181,7 +213,6 @@
                 </div>
             </div>
             <div id="medalsList">
-                <!-- Le medaglie appariranno qui -->
                 <div class="empty-state" id="emptyState">
                     <i class="fas fa-inbox"></i>
                     <h3>Nessuna medaglia ancora assegnata</h3>
@@ -197,7 +228,6 @@
     </footer>
 
     <script>
-        // Array vuoto per iniziare - NESSUN ESEMPIO
         let medals = [];
         
         document.addEventListener('DOMContentLoaded', function() {
@@ -220,7 +250,6 @@
                 const category = document.getElementById('category').value;
                 const message = document.getElementById('message').value.trim();
                 
-                // Validazioni
                 if (!assigner || !recipient || !category) {
                     alert("Compila tutti i campi obbligatori!");
                     return;
@@ -232,43 +261,32 @@
                 }
                 
                 const newMedal = {
-                    id: Date.now(), // ID unico
+                    id: Date.now(),
                     recipient: recipient,
                     assigner: assigner,
                     type: type,
                     category: category,
                     message: message || "Nessun messaggio fornito",
                     date: new Date().toLocaleDateString('it-IT'),
-                    timestamp: new Date().getTime() // Per ordinamento
+                    timestamp: new Date().getTime()
                 };
                 
-                // Aggiungi in cima all'array
                 medals.unshift(newMedal);
-                
-                // Salva nel localStorage
                 saveMedalsToStorage();
-                
-                // Aggiorna visualizzazione
                 renderMedals();
-                
-                // Reset form
                 this.reset();
                 document.querySelector('.medal-option[data-type="gold"]').click();
                 
-                // Messaggio di conferma
                 alert(`✓ Medaglia di ${getMedalTypeName(type)} assegnata a ${recipient}!`);
             });
             
-            // Ricerca medaglie
+            // Ricerca
             document.getElementById('searchInput').addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase().trim();
                 filterMedals(searchTerm);
             });
             
-            // Carica medaglie dal localStorage all'avvio
             loadMedalsFromStorage();
-            
-            // Renderizza le medaglie
             renderMedals();
         });
         
@@ -287,10 +305,8 @@
                 return;
             }
             
-            // Nascondi empty state
             if (emptyState) emptyState.style.display = 'none';
             
-            // Ordina per data (più recenti prima)
             const sortedMedals = [...medals].sort((a, b) => b.timestamp - a.timestamp);
             
             container.innerHTML = sortedMedals.map(medal => `
@@ -375,7 +391,6 @@
             `).join('');
         }
         
-        // Funzioni di utilità
         function getMedalTypeName(type) {
             return type === 'gold' ? 'Oro' : type === 'silver' ? 'Argento' : 'Bronzo';
         }
@@ -402,7 +417,6 @@
             return colors[Math.floor(Math.random() * colors.length)];
         }
         
-        // Funzioni per localStorage
         function saveMedalsToStorage() {
             localStorage.setItem('coppalibby_medals', JSON.stringify(medals));
         }
