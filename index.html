@@ -8,10 +8,10 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         
-        /* SFONDO CON IMMAGINE DI MUTTLEY */
+        /* SFONDO CON MUTTLEY VISIBILE */
         body { 
             background: 
-                linear-gradient(rgba(26, 26, 46, 0.85), rgba(42, 37, 75, 0.85)),
+                linear-gradient(rgba(26, 26, 46, 0.7), rgba(42, 37, 75, 0.7)),
                 url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
             background-size: cover;
             background-position: center;
@@ -19,37 +19,125 @@
             background-repeat: no-repeat;
             color: white; 
             min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Overlay più leggero per vedere meglio Muttley */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.5);
+            z-index: -1;
+        }
+        
+        /* Muttley in alto a destra */
+        .muttley-corner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            border: 3px solid #d4a017;
+            box-shadow: 0 0 15px rgba(212, 160, 23, 0.5);
+            z-index: 100;
+            opacity: 0.9;
+        }
+        
+        /* Muttley decorativo a sinistra */
+        .muttley-side {
+            position: fixed;
+            bottom: 50px;
+            left: 20px;
+            width: 150px;
+            height: 150px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.7;
+            transform: rotate(-10deg);
+            z-index: 50;
         }
         
         header { 
-            background: rgba(30, 30, 46, 0.95); 
+            background: rgba(30, 30, 46, 0.85); 
             padding: 25px; 
             text-align: center; 
             border-bottom: 5px solid #d4a017;
             box-shadow: 0 5px 20px rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 10;
+            margin-top: 60px; /* Spazio per Muttley in alto */
         }
         
         h1 { 
             font-size: 3.5rem; 
             color: #ffcc00; 
-            text-shadow: 3px 3px 0 #b8860b; 
+            text-shadow: 3px 3px 0 #b8860b, 0 0 10px rgba(0,0,0,0.5); 
             margin: 20px 0;
+            position: relative;
         }
         
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        /* Muttley nel titolo */
+        .muttley-title {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0 15px;
+            vertical-align: middle;
+            border-radius: 50%;
+            border: 2px solid #d4a017;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 30px auto; 
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
         
         .section { 
-            background: rgba(40, 40, 62, 0.9); 
+            background: rgba(40, 40, 62, 0.85); 
             border-radius: 15px; 
             padding: 25px; 
             margin-bottom: 30px;
             border: 2px solid #d4a017;
-            backdrop-filter: blur(3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Mini Muttley nei riquadri */
+        .section::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3;
         }
         
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #ffcc00; }
         input, select, textarea {
             width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #555;
             background: rgba(30,30,46,0.9); color: white; font-size: 1rem;
@@ -58,11 +146,18 @@
         .medal-types { display: flex; gap: 15px; margin: 15px 0; }
         .medal-option {
             display: flex; align-items: center; gap: 8px; padding: 10px 15px;
-            background: rgba(30,30,46,0.7); border-radius: 8px; cursor: pointer;
+            background: rgba(30,30,46,0.8); border-radius: 8px; cursor: pointer;
             border: 2px solid transparent; transition: all 0.3s;
         }
-        .medal-option:hover { background: rgba(212,160,23,0.15); }
-        .medal-option.selected { background: rgba(212,160,23,0.3); border-color: #d4a017; }
+        .medal-option:hover { 
+            background: rgba(212,160,23,0.25); 
+            border-color: #d4a017;
+        }
+        .medal-option.selected { 
+            background: rgba(212,160,23,0.4); 
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px rgba(212,160,23,0.3);
+        }
         
         .submit-btn {
             background: linear-gradient(to right, #d4a017, #ffcc00);
@@ -70,21 +165,52 @@
             font-size: 1.2rem; font-weight: bold; border-radius: 10px;
             cursor: pointer; width: 100%; margin-top: 20px;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(212,160,23,0.4);
+            box-shadow: 0 5px 20px rgba(212,160,23,0.6);
+        }
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3;
         }
         
         .medal-item {
-            background: rgba(30,30,46,0.9); border-radius: 10px; padding: 20px;
+            background: rgba(30,30,46,0.85); border-radius: 10px; padding: 20px;
             margin-bottom: 15px; border-left: 5px solid #d4a017;
             transition: all 0.3s;
-            backdrop-filter: blur(2px);
+            position: relative;
         }
         .medal-item:hover {
             transform: translateX(5px);
-            background: rgba(40,40,62,0.95);
+            background: rgba(40,40,62,0.9);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* Muttley nelle schede medaglie */
+        .medal-item::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.2;
         }
         
         .user-avatar {
@@ -92,17 +218,59 @@
             background: #555; display: inline-flex; align-items: center;
             justify-content: center; font-weight: bold; margin-right: 15px;
             font-size: 1.2rem;
+            border: 2px solid #d4a017;
         }
         
         .empty-state {
             text-align: center; padding: 40px 20px; color: #aaa; font-style: italic;
+            position: relative;
         }
-        .empty-state i { font-size: 3rem; margin-bottom: 15px; display: block; color: #666; }
+        .empty-state i { 
+            font-size: 3rem; 
+            margin-bottom: 15px; 
+            display: block; 
+            color: #d4a017;
+        }
+        
+        /* Muttley nello stato vuoto */
+        .empty-state::after {
+            content: '';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.2;
+        }
         
         footer {
-            background: rgba(30,30,46,0.95); text-align: center;
+            background: rgba(30,30,46,0.9); text-align: center;
             padding: 20px; margin-top: 40px; border-top: 5px solid #d4a017;
-            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Muttley nel footer */
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: rgba(30,30,46,0.9);
+            border-radius: 50%;
+            border: 2px solid #d4a017;
+            padding: 5px;
         }
         
         .search-box {
@@ -121,34 +289,74 @@
         }
         
         .category-badge {
-            background: rgba(212,160,23,0.2); padding: 4px 12px;
+            background: rgba(212,160,23,0.3); padding: 4px 12px;
             border-radius: 15px; font-size: 0.85rem;
+            color: #ffcc00;
         }
         
-        /* Banner Muttley */
+        /* Banner Muttley più evidente */
         .muttley-banner {
             max-width: 400px;
-            margin: 15px auto 0;
-            padding: 8px 20px;
-            background: linear-gradient(to right, rgba(212,160,23,0.1), rgba(212,160,23,0.2));
+            margin: 10px auto 0;
+            padding: 10px 20px;
+            background: linear-gradient(to right, rgba(212,160,23,0.3), rgba(212,160,23,0.4));
             border-radius: 20px;
-            border: 2px solid #d4a017;
+            border: 2px solid #ffcc00;
             font-size: 1rem;
             color: #ffcc00;
             font-weight: bold;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            box-shadow: 0 3px 10px rgba(212,160,23,0.3);
         }
         
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; }
             .medal-types { flex-direction: column; }
             .medal-option { justify-content: center; }
+            
+            /* Nascondi alcuni Muttley su mobile */
+            .muttley-side {
+                display: none;
+            }
+            
+            .muttley-corner {
+                width: 80px;
+                height: 80px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .muttley-title {
+                width: 40px;
+                height: 40px;
+                margin: 0 8px;
+            }
+            
+            header {
+                margin-top: 40px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Muttley in alto a destra -->
+    <div class="muttley-corner"></div>
+    
+    <!-- Muttley a sinistra -->
+    <div class="muttley-side"></div>
+    
     <header>
-        <h1><i class="fas fa-trophy"></i> COPPA LIBBY <i class="fas fa-trophy"></i></h1>
-        <p>Medagliere virtuale - Assegna medaglie agli altri, non a te stesso!</p>
+        <h1>
+            <i class="fas fa-trophy"></i> 
+            <span class="muttley-title"></span>
+            COPPA LIBBY 
+            <span class="muttley-title"></span>
+            <i class="fas fa-trophy"></i>
+        </h1>
+        <p>Medagliere virtuale - Assegna la medaglia che vuoi a chi vuoi ma occhio, non puoi farlo a te stesso!</p>
+        <div class="muttley-banner">
+            <i class="fas fa-dog"></i> Ispirato a Muttley delle "Macchine Volanti" <i class="fas fa-dog"></i>
+        </div>
     </header>
     
     <main class="container">
