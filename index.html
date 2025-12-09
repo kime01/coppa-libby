@@ -6,390 +6,647 @@
     <title>Coppa Libby - Medagliere Virtuale</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        
-        /* SFONDO CON MUTTLEY VISIBILE */
-        body { 
-            background: 
-                linear-gradient(rgba(26, 26, 46, 0.7), rgba(42, 37, 75, 0.7)),
-                url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: white; 
-            min-height: 100vh;
-            position: relative;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        /* Overlay più leggero per vedere meglio Muttley */
-        body::before {
-            content: '';
+        body {
+            background-color: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Sfondo ispirato a Muttley */
+        .muttley-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(26, 26, 46, 0.5);
+            background: 
+                linear-gradient(135deg, rgba(139, 69, 19, 0.15) 25%, transparent 25%) -50px 0,
+                linear-gradient(225deg, rgba(139, 69, 19, 0.15) 25%, transparent 25%) -50px 0,
+                linear-gradient(315deg, rgba(139, 69, 19, 0.15) 25%, transparent 25%),
+                linear-gradient(45deg, rgba(139, 69, 19, 0.15) 25%, transparent 25%);
+            background-size: 100px 100px;
+            background-color: #2a254b;
+            z-index: -2;
+        }
+        
+        .muttley-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(212, 160, 23, 0.1) 2%, transparent 2.5%),
+                radial-gradient(circle at 75% 75%, rgba(212, 160, 23, 0.1) 2%, transparent 2.5%),
+                radial-gradient(circle at 50% 50%, rgba(139, 69, 19, 0.1) 3%, transparent 3.5%);
+            background-size: 150px 150px;
             z-index: -1;
         }
         
-        /* Muttley in alto a destra */
-        .muttley-corner {
+        /* Sovrapposizione scura per migliorare la leggibilità */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.85) 0%, rgba(42, 37, 75, 0.85) 100%);
+            z-index: -1;
+        }
+        
+        /* Immagine di Muttley in alto a destra */
+        .muttley-image {
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 120px;
-            height: 120px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            border-radius: 50%;
-            border: 3px solid #d4a017;
-            box-shadow: 0 0 15px rgba(212, 160, 23, 0.5);
-            z-index: 100;
-            opacity: 0.9;
-        }
-        
-        /* Muttley decorativo a sinistra */
-        .muttley-side {
-            position: fixed;
-            bottom: 50px;
-            left: 20px;
             width: 150px;
             height: 150px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.7;
-            transform: rotate(-10deg);
-            z-index: 50;
-        }
-        
-        header { 
-            background: rgba(30, 30, 46, 0.85); 
-            padding: 25px; 
-            text-align: center; 
-            border-bottom: 5px solid #d4a017;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
-            position: relative;
-            z-index: 10;
-            margin-top: 60px; /* Spazio per Muttley in alto */
-        }
-        
-        h1 { 
-            font-size: 3.5rem; 
-            color: #ffcc00; 
-            text-shadow: 3px 3px 0 #b8860b, 0 0 10px rgba(0,0,0,0.5); 
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        /* Muttley nel titolo */
-        .muttley-title {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            margin: 0 15px;
-            vertical-align: middle;
-            border-radius: 50%;
-            border: 2px solid #d4a017;
-        }
-        
-        .container { 
-            max-width: 1200px; 
-            margin: 30px auto; 
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-        
-        .section { 
-            background: rgba(40, 40, 62, 0.85); 
-            border-radius: 15px; 
-            padding: 25px; 
-            margin-bottom: 30px;
-            border: 2px solid #d4a017;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-            position: relative;
+            z-index: 1;
+            border-radius: 10px;
             overflow: hidden;
+            border: 3px solid #d4a017;
+            box-shadow: 0 0 20px rgba(212, 160, 23, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(30, 30, 46, 0.9);
         }
         
-        /* Mini Muttley nei riquadri */
-        .section::after {
-            content: '';
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.3;
-        }
-        
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #ffcc00; }
-        input, select, textarea {
-            width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #555;
-            background: rgba(30,30,46,0.9); color: white; font-size: 1rem;
-        }
-        
-        .medal-types { display: flex; gap: 15px; margin: 15px 0; }
-        .medal-option {
-            display: flex; align-items: center; gap: 8px; padding: 10px 15px;
-            background: rgba(30,30,46,0.8); border-radius: 8px; cursor: pointer;
-            border: 2px solid transparent; transition: all 0.3s;
-        }
-        .medal-option:hover { 
-            background: rgba(212,160,23,0.25); 
-            border-color: #d4a017;
-        }
-        .medal-option.selected { 
-            background: rgba(212,160,23,0.4); 
-            border-color: #ffcc00;
-            box-shadow: 0 0 10px rgba(212,160,23,0.3);
-        }
-        
-        .submit-btn {
-            background: linear-gradient(to right, #d4a017, #ffcc00);
-            color: #1a1a2e; border: none; padding: 15px 30px;
-            font-size: 1.2rem; font-weight: bold; border-radius: 10px;
-            cursor: pointer; width: 100%; margin-top: 20px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(212,160,23,0.6);
-        }
-        .submit-btn::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 20px;
-            height: 20px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.3;
-        }
-        
-        .medal-item {
-            background: rgba(30,30,46,0.85); border-radius: 10px; padding: 20px;
-            margin-bottom: 15px; border-left: 5px solid #d4a017;
-            transition: all 0.3s;
-            position: relative;
-        }
-        .medal-item:hover {
-            transform: translateX(5px);
-            background: rgba(40,40,62,0.9);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        /* Muttley nelle schede medaglie */
-        .medal-item::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.2;
-        }
-        
-        .user-avatar {
-            width: 50px; height: 50px; border-radius: 50%;
-            background: #555; display: inline-flex; align-items: center;
-            justify-content: center; font-weight: bold; margin-right: 15px;
+        .muttley-image::before {
+            content: "🐕 MUTTLEY";
+            color: #ffcc00;
+            font-weight: bold;
             font-size: 1.2rem;
-            border: 2px solid #d4a017;
+            text-align: center;
+            padding: 10px;
         }
         
-        .empty-state {
-            text-align: center; padding: 40px 20px; color: #aaa; font-style: italic;
+        /* Stile per la testata */
+        header {
+            background-color: rgba(30, 30, 46, 0.9);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #d4a017;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             position: relative;
+            backdrop-filter: blur(5px);
+            margin-top: 50px;
         }
-        .empty-state i { 
-            font-size: 3rem; 
-            margin-bottom: 15px; 
-            display: block; 
+        
+        .title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            color: #ffcc00;
+            text-shadow: 3px 3px 0 #b8860b, 6px 6px 0 rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+        
+        .trophy-icon {
+            font-size: 3.5rem;
+            color: #ffcc00;
+            animation: spin 4s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #cccccc;
+            font-style: italic;
+        }
+        
+        /* Contenitore principale */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        /* Sezione per assegnare medaglie */
+        .assign-medal-section {
+            background-color: rgba(40, 40, 62, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 2px solid #d4a017;
+            backdrop-filter: blur(3px);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
             color: #d4a017;
         }
         
-        /* Muttley nello stato vuoto */
-        .empty-state::after {
-            content: '';
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 80px;
-            height: 80px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.2;
+        .medal-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
         
-        footer {
-            background: rgba(30,30,46,0.9); text-align: center;
-            padding: 20px; margin-top: 40px; border-top: 5px solid #d4a017;
-            position: relative;
-            z-index: 10;
+        .form-group {
+            display: flex;
+            flex-direction: column;
         }
         
-        /* Muttley nel footer */
-        footer::before {
-            content: '';
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 50px;
-            background-image: url('https://i.ibb.co/pv2HFKpv/Muttley-picture.gif');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: rgba(30,30,46,0.9);
-            border-radius: 50%;
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #cccccc;
+        }
+        
+        select, input, textarea {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #555;
+            background-color: rgba(30, 30, 46, 0.9);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #d4a017;
+        }
+        
+        .medal-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .medal-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background-color: rgba(30, 30, 46, 0.7);
+            transition: all 0.3s;
+        }
+        
+        .medal-option:hover {
+            background-color: rgba(212, 160, 23, 0.2);
+        }
+        
+        .medal-option.selected {
+            background-color: rgba(212, 160, 23, 0.3);
             border: 2px solid #d4a017;
-            padding: 5px;
+        }
+        
+        .medal-icon {
+            font-size: 1.5rem;
+        }
+        
+        .gold { color: #ffcc00; }
+        .silver { color: #c0c0c0; }
+        .bronze { color: #cd7f32; }
+        
+        .submit-btn {
+            grid-column: 1 / -1;
+            background-color: #d4a017;
+            color: #1a1a2e;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #ffcc00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 160, 23, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Sezione medagliere */
+        .medals-leaderboard {
+            background-color: rgba(40, 40, 62, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 2px solid #d4a017;
+            backdrop-filter: blur(3px);
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .search-box {
-            margin-bottom: 20px; display: flex; align-items: center;
-            background: rgba(30,30,46,0.9); border-radius: 8px;
-            padding: 10px 15px; border: 2px solid #555;
+            display: flex;
+            align-items: center;
+            background-color: rgba(30, 30, 46, 0.9);
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 2px solid #555;
         }
+        
         .search-box input {
-            border: none; background: transparent; margin-left: 10px;
-            color: white; width: 100%; font-size: 1rem;
+            border: none;
+            background: transparent;
+            width: 200px;
+            padding: 0;
+        }
+        
+        .medals-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .medal-item {
+            background-color: rgba(30, 30, 46, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+            border-left: 5px solid #d4a017;
+        }
+        
+        .medal-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(40, 40, 62, 0.9);
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .medal-details {
+            flex-grow: 1;
+        }
+        
+        .user-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffcc00;
         }
         
         .medal-info {
-            display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;
-            color: #ccc; font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
         
-        .category-badge {
-            background: rgba(212,160,23,0.3); padding: 4px 12px;
-            border-radius: 15px; font-size: 0.85rem;
+        .medal-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .assigner {
+            font-style: italic;
+            color: #cccccc;
+        }
+        
+        .medal-date {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+        }
+        
+        .message {
+            margin-top: 8px;
+            color: #cccccc;
+            font-style: italic;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: rgba(30, 30, 46, 0.9);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 5px solid #d4a017;
+            color: #cccccc;
+            backdrop-filter: blur(5px);
+        }
+        
+        .rules {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            text-align: left;
+            background-color: rgba(40, 40, 62, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .rules h3 {
             color: #ffcc00;
+            margin-bottom: 10px;
         }
         
-        /* Banner Muttley più evidente */
-        .muttley-banner {
-            max-width: 400px;
-            margin: 10px auto 0;
-            padding: 10px 20px;
-            background: linear-gradient(to right, rgba(212,160,23,0.3), rgba(212,160,23,0.4));
-            border-radius: 20px;
-            border: 2px solid #ffcc00;
-            font-size: 1rem;
-            color: #ffcc00;
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-            box-shadow: 0 3px 10px rgba(212,160,23,0.3);
+        .rules ul {
+            padding-left: 20px;
         }
         
+        .rules li {
+            margin-bottom: 8px;
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            .medal-types { flex-direction: column; }
-            .medal-option { justify-content: center; }
-            
-            /* Nascondi alcuni Muttley su mobile */
-            .muttley-side {
-                display: none;
+            h1 {
+                font-size: 2.5rem;
             }
             
-            .muttley-corner {
-                width: 80px;
-                height: 80px;
-                top: 10px;
-                right: 10px;
-            }
-            
-            .muttley-title {
-                width: 40px;
-                height: 40px;
-                margin: 0 8px;
+            .muttley-image {
+                position: relative;
+                top: 0;
+                right: 0;
+                width: 120px;
+                height: 120px;
+                margin: 0 auto 20px;
             }
             
             header {
-                margin-top: 40px;
+                margin-top: 20px;
             }
+            
+            .title-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .medal-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .leaderboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+        }
+        
+        /* Stile per la citazione di Muttley */
+        .muttley-quote {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: #d4a017;
+            font-style: italic;
+            font-weight: bold;
+        }
+        
+        .muttley-quote i {
+            font-size: 1.5rem;
+        }
+        
+        /* Banner Muttley */
+        .muttley-banner {
+            max-width: 300px;
+            margin: 10px auto 0;
+            padding: 8px 15px;
+            background-color: rgba(212, 160, 23, 0.2);
+            border-radius: 20px;
+            border: 2px dashed #d4a017;
+            font-size: 0.9rem;
+        }
+        
+        /* Decorazioni aggiuntive Muttley */
+        .muttley-decoration {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #d4a017 20%, transparent 21%);
+            background-size: 20px 20px;
+            z-index: 1;
+            opacity: 0.3;
+        }
+        
+        .muttley-decoration-2 {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            background: 
+                linear-gradient(45deg, transparent 49%, #d4a017 49%, #d4a017 51%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, #d4a017 49%, #d4a017 51%, transparent 51%);
+            background-size: 20px 20px;
+            z-index: 1;
+            opacity: 0.3;
+        }
+        
+        /* Selettore utente corrente */
+        .current-user-selector {
+            background-color: rgba(40, 40, 62, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #555;
+        }
+        
+        .current-user-selector label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #ffcc00;
+        }
+        
+        /* Statistiche utenti */
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .user-stat-card {
+            background-color: rgba(30, 30, 46, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border-top: 4px solid;
+            transition: transform 0.3s;
+        }
+        
+        .user-stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .user-stat-card.romeo { border-top-color: #3498db; }
+        .user-stat-card.alessio { border-top-color: #2ecc71; }
+        .user-stat-card.libby { border-top-color: #9b59b6; }
+        .user-stat-card.marilyn { border-top-color: #e74c3c; }
+        .user-stat-card.frankye { border-top-color: #f39c12; }
+        
+        .user-stat-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .user-stat-medals {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .stat-medal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-count {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <!-- Muttley in alto a destra -->
-    <div class="muttley-corner"></div>
+    <!-- Sfondo con pattern ispirato a Muttley -->
+    <div class="muttley-background"></div>
+    <div class="muttley-pattern"></div>
+    <div class="overlay"></div>
     
-    <!-- Muttley a sinistra -->
-    <div class="muttley-side"></div>
+    <!-- Decorazioni Muttley -->
+    <div class="muttley-decoration"></div>
+    <div class="muttley-decoration-2"></div>
     
+    <!-- Immagine di Muttley -->
+    <div class="muttley-image"></div>
+    
+    <!-- Intestazione -->
     <header>
-        <h1>
-            <i class="fas fa-trophy"></i> 
-            <span class="muttley-title"></span>
-            COPPA LIBBY 
-            <span class="muttley-title"></span>
-            <i class="fas fa-trophy"></i>
-        </h1>
-        <p>Medagliere virtuale - Assegna la medaglia che vuoi a chi vuoi ma occhio, non puoi farlo a te stesso!</p>
+        <div class="title-container">
+            <i class="fas fa-trophy trophy-icon"></i>
+            <h1>COPPA LIBBY</h1>
+            <i class="fas fa-trophy trophy-icon"></i>
+        </div>
+        <p class="subtitle">Medagliere virtuale - Assegna medaglie agli altri, non a te stesso!</p>
+        <div class="muttley-quote">
+            <i class="fas fa-quote-left"></i>
+            <span>Ispirato a Muttley delle "Macchine Volanti"!</span>
+            <i class="fas fa-quote-right"></i>
+        </div>
         <div class="muttley-banner">
-            <i class></i> "Sconfiggeremo l'AGA e lo faremo granulometricamente" <i class></i>
+            <i class="fas fa-star"></i> Tema ufficiale di Muttley <i class="fas fa-star"></i>
         </div>
     </header>
     
+    <!-- Contenuto principale -->
     <main class="container">
-        <section class="section">
-            <h2><i class="fas fa-award"></i> Assegna una Medaglia</h2>
-            <form id="medalForm">
+        <!-- Selettore utente corrente -->
+        <section class="assign-medal-section">
+            <div class="current-user-selector">
+                <label for="currentUser"><i class="fas fa-user"></i> Seleziona chi sei tu:</label>
+                <select id="currentUser" required>
+                    <option value="">-- Seleziona il tuo nome --</option>
+                    <option value="Romeo">Romeo</option>
+                    <option value="Alessio">Alessio</option>
+                    <option value="Libby">Libby</option>
+                    <option value="Marilyn">Marilyn</option>
+                    <option value="Frankye">Frankye</option>
+                </select>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #cccccc;">
+                    <i class="fas fa-info-circle"></i> Seleziona il tuo nome per poter assegnare medaglie agli altri
+                </p>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-award"></i> Assegna una Medaglia</h2>
+            <form class="medal-form" id="medalForm">
                 <div class="form-group">
-                    <label>Il tuo nome:</label>
-                    <input type="text" id="assigner" placeholder="Come ti chiami?" required>
+                    <label for="recipient">A chi vuoi assegnare la medaglia?</label>
+                    <select id="recipient" required disabled>
+                        <option value="">-- Prima seleziona chi sei tu --</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label>A chi vuoi assegnare la medaglia?</label>
-                    <input type="text" id="recipient" placeholder="Nome del destinatario" required>
-                </div>
+                
                 <div class="form-group">
                     <label>Tipo di medaglia:</label>
                     <div class="medal-types">
                         <div class="medal-option selected" data-type="gold">
-                            <i class="fas fa-medal" style="color:#ffcc00"></i> Oro
+                            <i class="fas fa-medal medal-icon gold"></i>
+                            <span>Oro</span>
                         </div>
                         <div class="medal-option" data-type="silver">
-                            <i class="fas fa-medal" style="color:#c0c0c0"></i> Argento
+                            <i class="fas fa-medal medal-icon silver"></i>
+                            <span>Argento</span>
                         </div>
                         <div class="medal-option" data-type="bronze">
-                            <i class="fas fa-medal" style="color:#cd7f32"></i> Bronzo
+                            <i class="fas fa-medal medal-icon bronze"></i>
+                            <span>Bronzo</span>
                         </div>
                     </div>
-                    <input type="hidden" id="medalType" value="gold">
+                    <input type="hidden" id="medalType" value="gold" required>
                 </div>
+                
                 <div class="form-group">
-                    <label>Categoria:</label>
+                    <label for="category">Categoria:</label>
                     <select id="category" required>
-                        <option value="">Seleziona categoria</option>
+                        <option value="">Seleziona una categoria</option>
                         <option value="coraggio">Coraggio</option>
                         <option value="creativita">Creatività</option>
                         <option value="gentilezza">Gentilezza</option>
@@ -399,211 +656,361 @@
                         <option value="altro">Altro</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
-                    <label>Messaggio (opzionale):</label>
+                    <label for="message">Messaggio (opzionale):</label>
                     <textarea id="message" rows="3" placeholder="Spiega perché merita questa medaglia..."></textarea>
                 </div>
-                <button type="submit" class="submit-btn">
+                
+                <button type="submit" class="submit-btn" disabled>
                     <i class="fas fa-trophy"></i> Assegna Medaglia
                 </button>
             </form>
         </section>
         
-        <section class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;"><i class="fas fa-list-ol"></i> Medagliere</h2>
+        <!-- Statistiche utenti -->
+        <section class="medals-leaderboard">
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> Statistiche Giocatori</h2>
+            <div class="user-stats" id="userStats">
+                <!-- Le statistiche verranno caricate qui tramite JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Medagliere -->
+        <section class="medals-leaderboard">
+            <div class="leaderboard-header">
+                <h2 class="section-title"><i class="fas fa-list-ol"></i> Medagliere</h2>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Cerca medaglie...">
+                    <input type="text" id="searchInput" placeholder="Cerca per nome o categoria...">
                 </div>
             </div>
-            <div id="medalsList">
-                <div class="empty-state" id="emptyState">
-                    <i class="fas fa-inbox"></i>
-                    <h3>Nessuna medaglia ancora assegnata</h3>
-                    <p>Sii il primo ad assegnare una medaglia!</p>
-                </div>
+            
+            <div class="medals-list" id="medalsList">
+                <!-- Le medaglie verranno caricate qui tramite JavaScript -->
             </div>
         </section>
     </main>
     
+    <!-- Footer -->
     <footer>
-        <p>Coppa Libby - Medagliere Virtuale</p>
-        <p>Assegna medaglie con spirito di squadra!</p>
+        <div class="rules">
+            <h3><i class="fas fa-info-circle"></i> Regole della Coppa Libby</h3>
+            <ul>
+                <li>Puoi assegnare medaglie solo ad altre persone, non a te stesso</li>
+                <li>Sii generoso nel riconoscere i meriti degli altri</li>
+                <li>Le medaglie possono essere d'oro, argento o bronzo</li>
+                <li>Ogni medaglia deve avere una categoria e può includere un messaggio</li>
+                <li>Lo spirito è quello del cartone "Le macchine volanti": amicizia e fair play!</li>
+            </ul>
+        </div>
+        <p>Coppa Libby - Medagliere Virtuale | Tema ispirato a Muttley delle "Macchine Volanti"</p>
+        <p><i class="fas fa-laugh-wink"></i> Assegna medaglie con divertimento e spirito di squadra!</p>
     </footer>
 
     <script>
-        let medals = [];
+        // Lista degli utenti predefiniti
+        const predefinedUsers = ['Romeo', 'Alessio', 'Libby', 'Marilyn', 'Frankye'];
         
+        // Colori per ogni utente
+        const userColors = {
+            'Romeo': '#3498db',
+            'Alessio': '#2ecc71',
+            'Libby': '#9b59b6',
+            'Marilyn': '#e74c3c',
+            'Frankye': '#f39c12'
+        };
+        
+        // Emoji per ogni utente
+        const userEmojis = {
+            'Romeo': '👑',
+            'Alessio': '🚀',
+            'Libby': '🌟',
+            'Marilyn': '💫',
+            'Frankye': '🔥'
+        };
+        
+        // Dati di esempio per il medagliere
+        let medals = [
+            {
+                id: 1,
+                recipient: "Libby",
+                assigner: "Romeo",
+                type: "gold",
+                category: "coraggio",
+                message: "Per aver organizzato questa bellissima Coppa Libby!",
+                date: "2023-10-15"
+            },
+            {
+                id: 2,
+                recipient: "Alessio",
+                assigner: "Marilyn",
+                type: "silver",
+                category: "creativita",
+                message: "Per le idee geniali che porti sempre",
+                date: "2023-10-10"
+            },
+            {
+                id: 3,
+                recipient: "Frankye",
+                assigner: "Alessio",
+                type: "bronze",
+                category: "gentilezza",
+                message: "Per l'aiuto sempre disponibile",
+                date: "2023-10-05"
+            },
+            {
+                id: 4,
+                recipient: "Marilyn",
+                assigner: "Libby",
+                type: "gold",
+                category: "leadership",
+                message: "Per la guida sicura in ogni situazione",
+                date: "2023-10-01"
+            },
+            {
+                id: 5,
+                recipient: "Romeo",
+                assigner: "Frankye",
+                type: "silver",
+                category: "divertimento",
+                message: "Per aver reso ogni momento più allegro",
+                date: "2023-09-28"
+            }
+        ];
+
+        // Inizializzazione al caricamento della pagina
         document.addEventListener('DOMContentLoaded', function() {
             // Selezione tipo medaglia
-            document.querySelectorAll('.medal-option').forEach(option => {
+            const medalOptions = document.querySelectorAll('.medal-option');
+            const medalTypeInput = document.getElementById('medalType');
+            
+            medalOptions.forEach(option => {
                 option.addEventListener('click', function() {
-                    document.querySelectorAll('.medal-option').forEach(opt => opt.classList.remove('selected'));
+                    medalOptions.forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
-                    document.getElementById('medalType').value = this.dataset.type;
+                    medalTypeInput.value = this.getAttribute('data-type');
                 });
             });
             
-            // Gestione form
-            document.getElementById('medalForm').addEventListener('submit', function(e) {
+            // Gestione selettore utente corrente
+            const currentUserSelect = document.getElementById('currentUser');
+            const recipientSelect = document.getElementById('recipient');
+            const submitBtn = document.querySelector('.submit-btn');
+            
+            currentUserSelect.addEventListener('change', function() {
+                const currentUser = this.value;
+                
+                if (currentUser) {
+                    // Abilita il form
+                    recipientSelect.disabled = false;
+                    submitBtn.disabled = false;
+                    
+                    // Popola il menù a tendina dei destinatari
+                    recipientSelect.innerHTML = '<option value="">-- Seleziona un destinatario --</option>';
+                    
+                    predefinedUsers.forEach(user => {
+                        if (user !== currentUser) {
+                            recipientSelect.innerHTML += `<option value="${user}">${user}</option>`;
+                        }
+                    });
+                } else {
+                    // Disabilita il form
+                    recipientSelect.disabled = true;
+                    submitBtn.disabled = true;
+                    recipientSelect.innerHTML = '<option value="">-- Prima seleziona chi sei tu --</option>';
+                }
+            });
+            
+            // Carica le medaglie iniziali e le statistiche
+            renderMedals(medals);
+            updateUserStats();
+            
+            // Gestione del form
+            const medalForm = document.getElementById('medalForm');
+            medalForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const assigner = document.getElementById('assigner').value.trim();
-                const recipient = document.getElementById('recipient').value.trim();
-                const type = document.getElementById('medalType').value;
+                const currentUser = currentUserSelect.value;
+                const recipient = recipientSelect.value;
+                const type = medalTypeInput.value;
                 const category = document.getElementById('category').value;
-                const message = document.getElementById('message').value.trim();
+                const message = document.getElementById('message').value;
                 
-                if (!assigner || !recipient || !category) {
-                    alert("Compila tutti i campi obbligatori!");
+                // Verifica che sia stato selezionato un utente corrente
+                if (!currentUser) {
+                    alert("Per favore, seleziona prima chi sei tu!");
                     return;
                 }
                 
-                if (assigner.toLowerCase() === recipient.toLowerCase()) {
-                    alert("Attenzione! Non puoi assegnare medaglie a te stesso.");
+                // Verifica che sia stato selezionato un destinatario
+                if (!recipient) {
+                    alert("Per favore, seleziona a chi vuoi assegnare la medaglia!");
                     return;
                 }
                 
+                // Verifica che non si stia assegnando una medaglia a se stessi
+                if (currentUser === recipient) {
+                    alert("Attenzione! Non puoi assegnare medaglie a te stesso. Lo spirito della Coppa Libby è riconoscere il merito degli altri!");
+                    return;
+                }
+                
+                // Crea una nuova medaglia
                 const newMedal = {
-                    id: Date.now(),
+                    id: medals.length + 1,
                     recipient: recipient,
-                    assigner: assigner,
+                    assigner: currentUser,
                     type: type,
                     category: category,
                     message: message || "Nessun messaggio fornito",
-                    date: new Date().toLocaleDateString('it-IT'),
-                    timestamp: new Date().getTime()
+                    date: new Date().toISOString().split('T')[0]
                 };
                 
+                // Aggiungi la medaglia all'array
                 medals.unshift(newMedal);
-                saveMedalsToStorage();
-                renderMedals();
-                this.reset();
-                document.querySelector('.medal-option[data-type="gold"]').click();
                 
-                alert(`✓ Medaglia di ${getMedalTypeName(type)} assegnata a ${recipient}!`);
+                // Aggiorna il medagliere e le statistiche
+                renderMedals(medals);
+                updateUserStats();
+                
+                // Reset del form (tranne l'utente corrente)
+                recipientSelect.value = "";
+                document.getElementById('category').value = "";
+                document.getElementById('message').value = "";
+                medalOptions.forEach(opt => opt.classList.remove('selected'));
+                document.querySelector('.medal-option[data-type="gold"]').classList.add('selected');
+                medalTypeInput.value = "gold";
+                
+                // Messaggio di successo
+                alert(`Medaglia di ${getMedalTypeName(type)} assegnata con successo a ${recipient}!`);
             });
             
-            // Ricerca
-            document.getElementById('searchInput').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase().trim();
-                filterMedals(searchTerm);
+            // Funzionalità di ricerca
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                if (searchTerm.trim() === '') {
+                    renderMedals(medals);
+                    return;
+                }
+                
+                const filteredMedals = medals.filter(medal => 
+                    medal.recipient.toLowerCase().includes(searchTerm) ||
+                    medal.assigner.toLowerCase().includes(searchTerm) ||
+                    medal.category.toLowerCase().includes(searchTerm) ||
+                    medal.message.toLowerCase().includes(searchTerm)
+                );
+                
+                renderMedals(filteredMedals);
             });
-            
-            loadMedalsFromStorage();
-            renderMedals();
         });
         
-        function renderMedals() {
-            const container = document.getElementById('medalsList');
-            const emptyState = document.getElementById('emptyState');
+        // Funzione per aggiornare le statistiche degli utenti
+        function updateUserStats() {
+            const userStatsContainer = document.getElementById('userStats');
             
-            if (medals.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" id="emptyState">
-                        <i class="fas fa-inbox"></i>
-                        <h3>Nessuna medaglia ancora assegnata</h3>
-                        <p>Sii il primo ad assegnare una medaglia!</p>
+            // Calcola le statistiche per ogni utente
+            const userStats = {};
+            
+            predefinedUsers.forEach(user => {
+                userStats[user] = {
+                    gold: 0,
+                    silver: 0,
+                    bronze: 0,
+                    total: 0
+                };
+            });
+            
+            // Conta le medaglie per ogni utente
+            medals.forEach(medal => {
+                if (userStats[medal.recipient]) {
+                    userStats[medal.recipient][medal.type]++;
+                    userStats[medal.recipient].total++;
+                }
+            });
+            
+            // Genera le card delle statistiche
+            userStatsContainer.innerHTML = predefinedUsers.map(user => {
+                const stats = userStats[user];
+                const userClass = user.toLowerCase();
+                
+                return `
+                    <div class="user-stat-card ${userClass}">
+                        <div class="user-stat-name">${userEmojis[user]} ${user}</div>
+                        <div>Medaglie totali: <span class="stat-count">${stats.total}</span></div>
+                        <div class="user-stat-medals">
+                            <div class="stat-medal">
+                                <i class="fas fa-medal gold"></i>
+                                <span class="stat-count">${stats.gold}</span>
+                            </div>
+                            <div class="stat-medal">
+                                <i class="fas fa-medal silver"></i>
+                                <span class="stat-count">${stats.silver}</span>
+                            </div>
+                            <div class="stat-medal">
+                                <i class="fas fa-medal bronze"></i>
+                                <span class="stat-count">${stats.bronze}</span>
+                            </div>
+                        </div>
                     </div>
                 `;
-                return;
-            }
-            
-            if (emptyState) emptyState.style.display = 'none';
-            
-            const sortedMedals = [...medals].sort((a, b) => b.timestamp - a.timestamp);
-            
-            container.innerHTML = sortedMedals.map(medal => `
-                <div class="medal-item" data-id="${medal.id}">
-                    <div style="display: flex; align-items: flex-start;">
-                        <div class="user-avatar" style="background-color: ${getRandomColor()}">
-                            ${medal.recipient.substring(0,2).toUpperCase()}
-                        </div>
-                        <div style="flex: 1;">
-                            <h3 style="color:#ffcc00; margin-bottom: 5px;">${medal.recipient}</h3>
-                            <div class="medal-info">
-                                <span style="display: flex; align-items: center; gap: 5px;">
-                                    <i class="fas fa-medal" style="color:${getMedalColor(medal.type)}"></i>
-                                    <strong>${getMedalTypeName(medal.type)}</strong>
-                                </span>
-                                <span class="category-badge">${getCategoryName(medal.category)}</span>
-                                <span><i class="fas fa-user-check"></i> Assegnata da: ${medal.assigner}</span>
-                                <span><i class="far fa-calendar"></i> ${medal.date}</span>
-                            </div>
-                            ${medal.message !== "Nessun messaggio fornito" ? 
-                                `<p style="margin-top: 10px; font-style: italic; color: #ddd;">"${medal.message}"</p>` : 
-                                ''
-                            }
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            }).join('');
         }
         
-        function filterMedals(searchTerm) {
-            if (!searchTerm) {
-                renderMedals();
+        // Funzione per visualizzare le medaglie
+        function renderMedals(medalsArray) {
+            const medalsList = document.getElementById('medalsList');
+            
+            if (medalsArray.length === 0) {
+                medalsList.innerHTML = '<div class="medal-item" style="justify-content: center; font-style: italic;">Nessuna medaglia trovata</div>';
                 return;
             }
             
-            const filtered = medals.filter(medal => 
-                medal.recipient.toLowerCase().includes(searchTerm) ||
-                medal.assigner.toLowerCase().includes(searchTerm) ||
-                medal.category.toLowerCase().includes(searchTerm) ||
-                medal.message.toLowerCase().includes(searchTerm)
-            );
+            // Ordina le medaglie per data (più recenti prima)
+            const sortedMedals = [...medalsArray].sort((a, b) => new Date(b.date) - new Date(a.date));
             
-            const container = document.getElementById('medalsList');
-            
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-search"></i>
-                        <h3>Nessuna medaglia trovata</h3>
-                        <p>Prova con un'altra ricerca</p>
+            medalsList.innerHTML = sortedMedals.map(medal => {
+                const medalTypeName = getMedalTypeName(medal.type);
+                const categoryName = getCategoryName(medal.category);
+                const formattedDate = formatDate(medal.date);
+                const initials = getInitials(medal.recipient);
+                const userColor = userColors[medal.recipient] || '#555';
+                
+                return `
+                    <div class="medal-item">
+                        <div class="user-avatar" style="background-color: ${userColor}">
+                            ${userEmojis[medal.recipient] || initials}
+                        </div>
+                        <div class="medal-details">
+                            <div class="user-name">${medal.recipient}</div>
+                            <div class="medal-info">
+                                <div class="medal-count">
+                                    <i class="fas fa-medal medal-icon ${medal.type}"></i>
+                                    <span>${medalTypeName}</span>
+                                </div>
+                                <div class="category">Categoria: ${categoryName}</div>
+                                <div class="assigner">Assegnata da: ${medal.assigner}</div>
+                                <div class="medal-date">${formattedDate}</div>
+                            </div>
+                            <div class="message">"${medal.message}"</div>
+                        </div>
                     </div>
                 `;
-                return;
-            }
-            
-            const sortedFiltered = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
-            
-            container.innerHTML = sortedFiltered.map(medal => `
-                <div class="medal-item">
-                    <div style="display: flex; align-items: flex-start;">
-                        <div class="user-avatar" style="background-color: ${getRandomColor()}">
-                            ${medal.recipient.substring(0,2).toUpperCase()}
-                        </div>
-                        <div style="flex: 1;">
-                            <h3 style="color:#ffcc00; margin-bottom: 5px;">${medal.recipient}</h3>
-                            <div class="medal-info">
-                                <span style="display: flex; align-items: center; gap: 5px;">
-                                    <i class="fas fa-medal" style="color:${getMedalColor(medal.type)}"></i>
-                                    <strong>${getMedalTypeName(medal.type)}</strong>
-                                </span>
-                                <span class="category-badge">${getCategoryName(medal.category)}</span>
-                                <span><i class="fas fa-user-check"></i> Assegnata da: ${medal.assigner}</span>
-                                <span><i class="far fa-calendar"></i> ${medal.date}</span>
-                            </div>
-                            ${medal.message !== "Nessun messaggio fornito" ? 
-                                `<p style="margin-top: 10px; font-style: italic; color: #ddd;">"${medal.message}"</p>` : 
-                                ''
-                            }
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            }).join('');
         }
         
+        // Funzione per ottenere il nome del tipo di medaglia
         function getMedalTypeName(type) {
-            return type === 'gold' ? 'Oro' : type === 'silver' ? 'Argento' : 'Bronzo';
+            const types = {
+                'gold': 'Oro',
+                'silver': 'Argento',
+                'bronze': 'Bronzo'
+            };
+            return types[type] || type;
         }
         
-        function getMedalColor(type) {
-            return type === 'gold' ? '#ffcc00' : type === 'silver' ? '#c0c0c0' : '#cd7f32';
-        }
-        
+        // Funzione per ottenere il nome della categoria
         function getCategoryName(category) {
             const categories = {
                 'coraggio': 'Coraggio',
@@ -617,20 +1024,15 @@
             return categories[category] || category;
         }
         
-        function getRandomColor() {
-            const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#1abc9c', '#f39c12', '#d35400'];
-            return colors[Math.floor(Math.random() * colors.length)];
+        // Funzione per formattare la data
+        function formatDate(dateString) {
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('it-IT', options);
         }
         
-        function saveMedalsToStorage() {
-            localStorage.setItem('coppalibby_medals', JSON.stringify(medals));
-        }
-        
-        function loadMedalsFromStorage() {
-            const saved = localStorage.getItem('coppalibby_medals');
-            if (saved) {
-                medals = JSON.parse(saved);
-            }
+        // Funzione per ottenere le iniziali di un nome
+        function getInitials(name) {
+            return name.split(' ').map(part => part[0]).join('').toUpperCase().substring(0, 2);
         }
     </script>
 </body>
