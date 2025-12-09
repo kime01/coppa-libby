@@ -186,6 +186,18 @@
             opacity: 0.3;
         }
         
+        .submit-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .submit-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
         .medal-item {
             background: rgba(30,30,46,0.85); border-radius: 10px; padding: 20px;
             margin-bottom: 15px; border-left: 5px solid #d4a017;
@@ -215,7 +227,7 @@
         
         .user-avatar {
             width: 50px; height: 50px; border-radius: 50%;
-            background: #555; display: inline-flex; align-items: center;
+            display: inline-flex; align-items: center;
             justify-content: center; font-weight: bold; margin-right: 15px;
             font-size: 1.2rem;
             border: 2px solid #d4a017;
@@ -309,10 +321,83 @@
             box-shadow: 0 3px 10px rgba(212,160,23,0.3);
         }
         
+        /* Selettore utente corrente */
+        .user-selector {
+            background: rgba(30,30,46,0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #555;
+        }
+        
+        .user-selector label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #ffcc00;
+        }
+        
+        .user-selector select {
+            background: rgba(40,40,62,0.9);
+        }
+        
+        /* Statistiche utenti */
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .user-stat-card {
+            background: rgba(30,30,46,0.9);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border-top: 4px solid;
+            transition: transform 0.3s;
+        }
+        
+        .user-stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .user-stat-card.romeo { border-top-color: #3498db; }
+        .user-stat-card.alessio { border-top-color: #2ecc71; }
+        .user-stat-card.libby { border-top-color: #9b59b6; }
+        .user-stat-card.marilyn { border-top-color: #e74c3c; }
+        .user-stat-card.frankye { border-top-color: #f39c12; }
+        
+        .user-stat-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .user-stat-medals {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .stat-medal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-count {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; }
             .medal-types { flex-direction: column; }
             .medal-option { justify-content: center; }
+            .user-stats { grid-template-columns: 1fr; }
             
             /* Nascondi alcuni Muttley su mobile */
             .muttley-side {
@@ -355,22 +440,37 @@
         </h1>
         <p>Medagliere virtuale - Assegna la medaglia che vuoi a chi vuoi ma occhio, non puoi farlo a te stesso!</p>
         <div class="muttley-banner">
-            <i class></i> "Sconfiggeremo l'AGA e lo faremo granulometricamente" <i class></i>
+            <i class="fas fa-quote-left"></i> "Sconfiggeremo l'AGA e lo faremo granulometricamente" <i class="fas fa-quote-right"></i>
         </div>
     </header>
     
     <main class="container">
+        <!-- Selettore utente corrente -->
         <section class="section">
+            <div class="user-selector">
+                <label for="currentUser"><i class="fas fa-user"></i> Seleziona chi sei tu:</label>
+                <select id="currentUser" required>
+                    <option value="">-- Seleziona il tuo nome --</option>
+                    <option value="Romeo">Romeo</option>
+                    <option value="Alessio">Alessio</option>
+                    <option value="Libby">Libby</option>
+                    <option value="Marilyn">Marilyn</option>
+                    <option value="Frankye">Frankye</option>
+                </select>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #cccccc;">
+                    <i class="fas fa-info-circle"></i> Seleziona il tuo nome per poter assegnare medaglie agli altri
+                </p>
+            </div>
+            
             <h2><i class="fas fa-award"></i> Assegna una Medaglia</h2>
             <form id="medalForm">
                 <div class="form-group">
-                    <label>Il tuo nome:</label>
-                    <input type="text" id="assigner" placeholder="Come ti chiami?" required>
-                </div>
-                <div class="form-group">
                     <label>A chi vuoi assegnare la medaglia?</label>
-                    <input type="text" id="recipient" placeholder="Nome del destinatario" required>
+                    <select id="recipient" required disabled>
+                        <option value="">-- Prima seleziona chi sei tu --</option>
+                    </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Tipo di medaglia:</label>
                     <div class="medal-types">
@@ -386,6 +486,7 @@
                     </div>
                     <input type="hidden" id="medalType" value="gold">
                 </div>
+                
                 <div class="form-group">
                     <label>Categoria:</label>
                     <select id="category" required>
@@ -399,16 +500,27 @@
                         <option value="altro">Altro</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label>Messaggio (opzionale):</label>
                     <textarea id="message" rows="3" placeholder="Spiega perché merita questa medaglia..."></textarea>
                 </div>
-                <button type="submit" class="submit-btn">
+                
+                <button type="submit" class="submit-btn" disabled>
                     <i class="fas fa-trophy"></i> Assegna Medaglia
                 </button>
             </form>
         </section>
         
+        <!-- Statistiche utenti -->
+        <section class="section">
+            <h2><i class="fas fa-chart-bar"></i> Statistiche Giocatori</h2>
+            <div class="user-stats" id="userStats">
+                <!-- Le statistiche verranno caricate qui tramite JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Medagliere -->
         <section class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="margin: 0;"><i class="fas fa-list-ol"></i> Medagliere</h2>
@@ -433,6 +545,27 @@
     </footer>
 
     <script>
+        // Lista degli utenti predefiniti
+        const predefinedUsers = ['Romeo', 'Alessio', 'Libby', 'Marilyn', 'Frankye'];
+        
+        // Colori per ogni utente
+        const userColors = {
+            'Romeo': '#3498db',
+            'Alessio': '#2ecc71',
+            'Libby': '#9b59b6',
+            'Marilyn': '#e74c3c',
+            'Frankye': '#f39c12'
+        };
+        
+        // Emoji per ogni utente
+        const userEmojis = {
+            'Romeo': '👑',
+            'Alessio': '🚀',
+            'Libby': '🌟',
+            'Marilyn': '💫',
+            'Frankye': '🔥'
+        };
+        
         let medals = [];
         
         document.addEventListener('DOMContentLoaded', function() {
@@ -445,22 +578,63 @@
                 });
             });
             
+            // Gestione selettore utente corrente
+            const currentUserSelect = document.getElementById('currentUser');
+            const recipientSelect = document.getElementById('recipient');
+            const submitBtn = document.querySelector('.submit-btn');
+            
+            currentUserSelect.addEventListener('change', function() {
+                const currentUser = this.value;
+                
+                if (currentUser) {
+                    // Abilita il form
+                    recipientSelect.disabled = false;
+                    submitBtn.disabled = false;
+                    
+                    // Popola il menù a tendina dei destinatari
+                    recipientSelect.innerHTML = '<option value="">-- Seleziona un destinatario --</option>';
+                    
+                    predefinedUsers.forEach(user => {
+                        if (user !== currentUser) {
+                            recipientSelect.innerHTML += `<option value="${user}">${user}</option>`;
+                        }
+                    });
+                } else {
+                    // Disabilita il form
+                    recipientSelect.disabled = true;
+                    submitBtn.disabled = true;
+                    recipientSelect.innerHTML = '<option value="">-- Prima seleziona chi sei tu --</option>';
+                }
+            });
+            
             // Gestione form
             document.getElementById('medalForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const assigner = document.getElementById('assigner').value.trim();
-                const recipient = document.getElementById('recipient').value.trim();
+                const currentUser = currentUserSelect.value;
+                const recipient = recipientSelect.value;
                 const type = document.getElementById('medalType').value;
                 const category = document.getElementById('category').value;
                 const message = document.getElementById('message').value.trim();
                 
-                if (!assigner || !recipient || !category) {
-                    alert("Compila tutti i campi obbligatori!");
+                // Verifica che sia stato selezionato un utente corrente
+                if (!currentUser) {
+                    alert("Per favore, seleziona prima chi sei tu!");
                     return;
                 }
                 
-                if (assigner.toLowerCase() === recipient.toLowerCase()) {
+                // Verifica che sia stato selezionato un destinatario
+                if (!recipient) {
+                    alert("Per favore, seleziona a chi vuoi assegnare la medaglia!");
+                    return;
+                }
+                
+                if (!category) {
+                    alert("Seleziona una categoria per la medaglia!");
+                    return;
+                }
+                
+                if (currentUser.toLowerCase() === recipient.toLowerCase()) {
                     alert("Attenzione! Non puoi assegnare medaglie a te stesso.");
                     return;
                 }
@@ -468,7 +642,7 @@
                 const newMedal = {
                     id: Date.now(),
                     recipient: recipient,
-                    assigner: assigner,
+                    assigner: currentUser,
                     type: type,
                     category: category,
                     message: message || "Nessun messaggio fornito",
@@ -479,7 +653,12 @@
                 medals.unshift(newMedal);
                 saveMedalsToStorage();
                 renderMedals();
-                this.reset();
+                updateUserStats();
+                
+                // Reset parziale del form (mantiene utente corrente)
+                recipientSelect.value = "";
+                document.getElementById('category').value = "";
+                document.getElementById('message').value = "";
                 document.querySelector('.medal-option[data-type="gold"]').click();
                 
                 alert(`✓ Medaglia di ${getMedalTypeName(type)} assegnata a ${recipient}!`);
@@ -493,7 +672,59 @@
             
             loadMedalsFromStorage();
             renderMedals();
+            updateUserStats();
         });
+        
+        function updateUserStats() {
+            const userStatsContainer = document.getElementById('userStats');
+            
+            // Calcola le statistiche per ogni utente
+            const userStats = {};
+            
+            predefinedUsers.forEach(user => {
+                userStats[user] = {
+                    gold: 0,
+                    silver: 0,
+                    bronze: 0,
+                    total: 0
+                };
+            });
+            
+            // Conta le medaglie per ogni utente
+            medals.forEach(medal => {
+                if (userStats[medal.recipient]) {
+                    userStats[medal.recipient][medal.type]++;
+                    userStats[medal.recipient].total++;
+                }
+            });
+            
+            // Genera le card delle statistiche
+            userStatsContainer.innerHTML = predefinedUsers.map(user => {
+                const stats = userStats[user];
+                const userClass = user.toLowerCase();
+                
+                return `
+                    <div class="user-stat-card ${userClass}">
+                        <div class="user-stat-name">${userEmojis[user]} ${user}</div>
+                        <div>Medaglie totali: <span class="stat-count">${stats.total}</span></div>
+                        <div class="user-stat-medals">
+                            <div class="stat-medal">
+                                <i class="fas fa-medal" style="color:#ffcc00"></i>
+                                <span class="stat-count">${stats.gold}</span>
+                            </div>
+                            <div class="stat-medal">
+                                <i class="fas fa-medal" style="color:#c0c0c0"></i>
+                                <span class="stat-count">${stats.silver}</span>
+                            </div>
+                            <div class="stat-medal">
+                                <i class="fas fa-medal" style="color:#cd7f32"></i>
+                                <span class="stat-count">${stats.bronze}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
         
         function renderMedals() {
             const container = document.getElementById('medalsList');
@@ -514,31 +745,36 @@
             
             const sortedMedals = [...medals].sort((a, b) => b.timestamp - a.timestamp);
             
-            container.innerHTML = sortedMedals.map(medal => `
-                <div class="medal-item" data-id="${medal.id}">
-                    <div style="display: flex; align-items: flex-start;">
-                        <div class="user-avatar" style="background-color: ${getRandomColor()}">
-                            ${medal.recipient.substring(0,2).toUpperCase()}
-                        </div>
-                        <div style="flex: 1;">
-                            <h3 style="color:#ffcc00; margin-bottom: 5px;">${medal.recipient}</h3>
-                            <div class="medal-info">
-                                <span style="display: flex; align-items: center; gap: 5px;">
-                                    <i class="fas fa-medal" style="color:${getMedalColor(medal.type)}"></i>
-                                    <strong>${getMedalTypeName(medal.type)}</strong>
-                                </span>
-                                <span class="category-badge">${getCategoryName(medal.category)}</span>
-                                <span><i class="fas fa-user-check"></i> Assegnata da: ${medal.assigner}</span>
-                                <span><i class="far fa-calendar"></i> ${medal.date}</span>
+            container.innerHTML = sortedMedals.map(medal => {
+                const userColor = userColors[medal.recipient] || getRandomColor();
+                const userEmoji = userEmojis[medal.recipient] || '';
+                
+                return `
+                    <div class="medal-item" data-id="${medal.id}">
+                        <div style="display: flex; align-items: flex-start;">
+                            <div class="user-avatar" style="background-color: ${userColor}">
+                                ${userEmoji || medal.recipient.substring(0,2).toUpperCase()}
                             </div>
-                            ${medal.message !== "Nessun messaggio fornito" ? 
-                                `<p style="margin-top: 10px; font-style: italic; color: #ddd;">"${medal.message}"</p>` : 
-                                ''
-                            }
+                            <div style="flex: 1;">
+                                <h3 style="color:#ffcc00; margin-bottom: 5px;">${medal.recipient}</h3>
+                                <div class="medal-info">
+                                    <span style="display: flex; align-items: center; gap: 5px;">
+                                        <i class="fas fa-medal" style="color:${getMedalColor(medal.type)}"></i>
+                                        <strong>${getMedalTypeName(medal.type)}</strong>
+                                    </span>
+                                    <span class="category-badge">${getCategoryName(medal.category)}</span>
+                                    <span><i class="fas fa-user-check"></i> Assegnata da: ${medal.assigner}</span>
+                                    <span><i class="far fa-calendar"></i> ${medal.date}</span>
+                                </div>
+                                ${medal.message !== "Nessun messaggio fornito" ? 
+                                    `<p style="margin-top: 10px; font-style: italic; color: #ddd;">"${medal.message}"</p>` : 
+                                    ''
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         function filterMedals(searchTerm) {
@@ -569,31 +805,36 @@
             
             const sortedFiltered = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
             
-            container.innerHTML = sortedFiltered.map(medal => `
-                <div class="medal-item">
-                    <div style="display: flex; align-items: flex-start;">
-                        <div class="user-avatar" style="background-color: ${getRandomColor()}">
-                            ${medal.recipient.substring(0,2).toUpperCase()}
-                        </div>
-                        <div style="flex: 1;">
-                            <h3 style="color:#ffcc00; margin-bottom: 5px;">${medal.recipient}</h3>
-                            <div class="medal-info">
-                                <span style="display: flex; align-items: center; gap: 5px;">
-                                    <i class="fas fa-medal" style="color:${getMedalColor(medal.type)}"></i>
-                                    <strong>${getMedalTypeName(medal.type)}</strong>
-                                </span>
-                                <span class="category-badge">${getCategoryName(medal.category)}</span>
-                                <span><i class="fas fa-user-check"></i> Assegnata da: ${medal.assigner}</span>
-                                <span><i class="far fa-calendar"></i> ${medal.date}</span>
+            container.innerHTML = sortedFiltered.map(medal => {
+                const userColor = userColors[medal.recipient] || getRandomColor();
+                const userEmoji = userEmojis[medal.recipient] || '';
+                
+                return `
+                    <div class="medal-item">
+                        <div style="display: flex; align-items: flex-start;">
+                            <div class="user-avatar" style="background-color: ${userColor}">
+                                ${userEmoji || medal.recipient.substring(0,2).toUpperCase()}
                             </div>
-                            ${medal.message !== "Nessun messaggio fornito" ? 
-                                `<p style="margin-top: 10px; font-style: italic; color: #ddd;">"${medal.message}"</p>` : 
-                                ''
-                            }
+                            <div style="flex: 1;">
+                                <h3 style="color:#ffcc00; margin-bottom: 5px;">${medal.recipient}</h3>
+                                <div class="medal-info">
+                                    <span style="display: flex; align-items: center; gap: 5px;">
+                                        <i class="fas fa-medal" style="color:${getMedalColor(medal.type)}"></i>
+                                        <strong>${getMedalTypeName(medal.type)}</strong>
+                                    </span>
+                                    <span class="category-badge">${getCategoryName(medal.category)}</span>
+                                    <span><i class="fas fa-user-check"></i> Assegnata da: ${medal.assigner}</span>
+                                    <span><i class="far fa-calendar"></i> ${medal.date}</span>
+                                </div>
+                                ${medal.message !== "Nessun messaggio fornito" ? 
+                                    `<p style="margin-top: 10px; font-style: italic; color: #ddd;">"${medal.message}"</p>` : 
+                                    ''
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         function getMedalTypeName(type) {
